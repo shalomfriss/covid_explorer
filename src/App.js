@@ -44,24 +44,31 @@ class App extends Component {
               console.log(result.Global)
               console.log(result.Countries)
               console.log(this.grid)
+              
 
+              const defaultColumnProperties = {
+                sortable: true,
+                //width: 200
+              };
+              
               const theColumns = [
-                {key: "Country", name: "Country"}, 
-                {key: "Date", name: "Date"}, 
-                {key: "NewConfirmed", name: "New Confirmed"}, 
-                {key: "NewDeaths", name: "New Deaths"}, 
-                {key: "NewRecovered", name: "New Recovered"}, 
-                {key: "Slug", name: "Slug"}, 
-                {key: "TotalConfirmed", name: "Total Confirmed"}, 
-                {key: "TotalDeaths", name: "Total Deaths"}, 
-                {key: "TotalRecovered", name: "Total Recovered"}]
+                {field: "Country", title: "Country"}, 
+                //{key: "Date", name: "Date"}, 
+                {field: "NewConfirmed", title: "New Confirmed"}, 
+                {field: "NewDeaths", title: "New Deaths"}, 
+                {field: "NewRecovered", title: "New Recovered"}, 
+                //{key: "Slug", name: "Slug"}, 
+                {field: "TotalConfirmed", title: "Total Confirmed"}, 
+                {field: "TotalDeaths", title: "Total Deaths"}, 
+                {field: "TotalRecovered", title: "Total Recovered"}]
+                
+              
               this.grid.current.setData(result.Countries, theColumns)
             },
             (error) => {
-            console.log(error)
+              console.log(error)
             }
         )
-    
   }
 
     render() {

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import ReactDOM from 'react-dom';
-import DataGrid from 'react-data-grid';
-import 'react-data-grid/dist/react-data-grid.css';
+import MaterialTable from 'material-table';
+
 
 class ReactDataGrid extends Component {
 
@@ -24,16 +24,17 @@ class ReactDataGrid extends Component {
     componentDidMount() {
     
     }
-
+    
+    
     render() {
+              
         
-
         return (
-            <DataGrid
-                columns={this.state.columns}
-                rows={this.state.rows}
-                ref={this.grid}
-            />
+          <MaterialTable
+          // other props
+          columns={this.state.columns}
+          data={this.state.rows}
+      />
         );
     }
 
