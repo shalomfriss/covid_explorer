@@ -7,7 +7,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 
 class DeckGLMap extends Component {
     
-
+    
     constructor(props) {
         super(props);
         this.state = {};

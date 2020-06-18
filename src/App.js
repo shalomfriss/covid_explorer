@@ -14,6 +14,10 @@ class App extends Component {
 
   constructor(props) {
       super(props);
+      this.grid = React.createRef()
+      this.map = React.createRef()
+      this.lineChart = React.createRef()
+
       this.state = {};
 
       this.state.options = {
@@ -37,7 +41,21 @@ class App extends Component {
       .then(res => res.json())
       .then(
             (result) => {
-            console.log(result)
+              console.log(result.Global)
+              console.log(result.Countries)
+              console.log(this.grid)
+
+              const theColumns = [
+                {key: "Country", name: "Country"}, 
+                {key: "Date", name: "Date"}, 
+                {key: "NewConfirmed", name: "New Confirmed"}, 
+                {key: "NewDeaths", name: "New Deaths"}, 
+                {key: "NewRecovered", name: "New Recovered"}, 
+                {key: "Slug", name: "Slug"}, 
+                {key: "TotalConfirmed", name: "Total Confirmed"}, 
+                {key: "TotalDeaths", name: "Total Deaths"}, 
+                {key: "TotalRecovered", name: "Total Recovered"}]
+              this.grid.current.setData(result.Countries, theColumns)
             },
             (error) => {
             console.log(error)
@@ -49,18 +67,9 @@ class App extends Component {
     render() {
       return(
         <div className="App">
-          <table>
-            <tr>
-              <td><DeckGLMap /></td>
-            </tr>
-            <tr>
-              <td><LineChart/> </td>
-            </tr>
-            <tr>
-              <td><ReactDataGrid/> </td>
-            </tr>
-          </table>
-          
+          <DeckGLMap ref={this.map} />
+          <LineChart ref={this.lineChart} />
+          <ReactDataGrid ref={this.grid} />
         </div>)
     }
 }
