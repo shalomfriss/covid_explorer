@@ -1,0 +1,42 @@
+.globalsDiv {
+    width: 100%;
+    height: 70px;
+    padding: 5px;
+    background-color: #ff206e;
+}
+
+.globalEntry {
+    display: inline-block;
+    margin-right: 20px;
+    color: #fff;
+    font-size: 18px;
+    margin-top: 3px;
+}
+
+.globalEntryTitle {
+    font-weight: bold;
+}
+
+.globalEntryValue {
+    font-style: italic;
+}
+
+.blackColor {
+    background-color: #0c0f0a;
+}
+
+.pinkColor {
+    background-color: #ff206e;
+}
+
+.yellowColor {
+    background-color: #fbff12;
+}
+
+.blueColor {
+    background-color: #41ead4;
+}
+
+.whiteColor {
+    background-color: #ffffff;
+}

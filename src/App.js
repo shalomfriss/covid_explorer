@@ -6,11 +6,7 @@ import KeplerGLMap from "./components/KeplerGLMap";
 import ReactDataGrid from "./components/ReactDataGrid";
 import logo from './logo.svg';
 
-
-
-
 class App extends Component {
-    
 
   constructor(props) {
       super(props);
@@ -54,16 +50,18 @@ class App extends Component {
               const theColumns = [
                 {field: "Country", title: "Country"}, 
                 //{key: "Date", name: "Date"}, 
-                {field: "NewConfirmed", title: "New Confirmed"}, 
-                {field: "NewDeaths", title: "New Deaths"}, 
-                {field: "NewRecovered", title: "New Recovered"}, 
-                //{key: "Slug", name: "Slug"}, 
                 {field: "TotalConfirmed", title: "Total Confirmed"}, 
                 {field: "TotalDeaths", title: "Total Deaths"}, 
-                {field: "TotalRecovered", title: "Total Recovered"}]
+                {field: "TotalRecovered", title: "Total Recovered"},
+                
+                {field: "NewConfirmed", title: "New Confirmed"}, 
+                {field: "NewDeaths", title: "New Deaths"}, 
+                {field: "NewRecovered", title: "New Recovered"}
+                //{key: "Slug", name: "Slug"}, 
+                ]
                 
               
-              this.grid.current.setData(result.Countries, theColumns)
+              this.grid.current.setData(result.Countries, theColumns, result.Global)
             },
             (error) => {
               console.log(error)
@@ -74,11 +72,17 @@ class App extends Component {
     render() {
       return(
         <div className="App">
+          <div>
           <DeckGLMap ref={this.map} />
-          <LineChart ref={this.lineChart} />
+          </div>
+          <div>
           <ReactDataGrid ref={this.grid} />
+          </div>
+          
         </div>)
     }
 }
+
+//          <LineChart ref={this.lineChart} />
 
 export default App;
