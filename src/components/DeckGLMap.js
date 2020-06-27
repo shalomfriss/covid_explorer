@@ -1,100 +1,164 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import DeckGL from '@deck.gl/react';
-import {LineLayer, ScatterplotLayer, PathLayer} from '@deck.gl/layers';
+import {LineLayer, PathLayer} from '@deck.gl/layers';
+import {GeoJsonLayer, TextLayer, ScatterplotLayer} from '@deck.gl/layers';
+import {HexagonLayer} from '@deck.gl/aggregation-layers';
 import {StaticMap} from 'react-map-gl';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
 
+
+const ambientLight = new AmbientLight({
+    color: [255, 255, 255],
+    intensity: 1.0
+  });
+  
+  const pointLight1 = new PointLight({
+    color: [255, 255, 255],
+    intensity: 0.8,
+    position: [-0.144528, 49.739968, 80000]
+  });
+  
+  const pointLight2 = new PointLight({
+    color: [255, 255, 255],
+    intensity: 0.8,
+    position: [-3.807751, 54.104682, 8000]
+  });
+  
+  const lightingEffect = new LightingEffect({ambientLight, pointLight1, pointLight2});
+  
+  const material = {
+    ambient: 0.64,
+    diffuse: 0.6,
+    shininess: 32,
+    specularColor: [51, 51, 51]
+  };
+
+  const colorRange = [
+    [1, 152, 189],
+    [73, 227, 206],
+    [216, 254, 181],
+    [254, 237, 177],
+    [254, 173, 84],
+    [209, 55, 78]
+  ];
+
+  const elevationScale = {min: 1, max: 50};
 
 
 class DeckGLMap extends Component {
     
+    static get defaultColorRange() {
+        return colorRange;
+      }
     
     constructor(props) {
         super(props);
-        this.state = {};
+
+        this.state = {
+            elevationScale: elevationScale.min
+        };
 
         this.state.initialViewState = {
             longitude: -74.00578,
             latitude: 40.713067,
-            zoom: 8,
-            pitch: 0,
+            zoom: 2,
+            pitch: 30,
             bearing: 0
         };
-        this.state.data = [{sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}];
+
+        this.state.data = props.data
+        console.log("DATA", this.state.data)
         this.state.token = "pk.eyJ1Ijoic2hhbG9tZnJpc3MiLCJhIjoiY2l2Mm9sanZlMDBjbjJ0bW0yZW4yY3RzdCJ9.zUxsw0zwKk1O38YSRpm9OA"
+        this.state.layers = []
+        this.map = React.createRef()
     }
 
     componentDidMount() {
+
     }
 
     setData(data) {
-        this.setState({data: data})
+      data.Countries.map(item => {
+        item.text = item.TotalConfirmed + ""
+      })
+      console.log(data.Countries)
+      this.state.layers = this._renderLayers(data.Countries)  
+      this.setState({data: data})
     }
+    
 
-    render() {
-        /*
-        const data = this.state.data;
+    
+    _renderLayers(theData) {
+        
+        const radius = 1000
+        const upperPercentile = 100
+        const coverage = 1
+        
+        console.log(theData)
         const layers = [
-            new ScatterplotLayer({data})
-            //new LineLayer({id: 'line-layer', this.state.data})
+          new ScatterplotLayer({
+            id: 'my-scatterplot',
+            data: theData,
+            getPosition: d => [d.longitude, d.latitude, 0],
+            getRadius: d => d.TotalConfirmed / 10,
+            radiusScale: 10,
+            radiusMinPixels: 2,
+            radiusMaxPixels: 30,
+            getColor: [255, 20, 100]
+          }),
+          new TextLayer({
+            data: theData,
+            getPosition: d => [d.longitude, d.latitude, 0],
+            getText: d => d.text
+          })
+        ];
+        
+        return layers
+
+        //console.log(geojsonLayer)
+        //return [geojsonLayer]
+        /*
+        return [
+          new HexagonLayer({
+            id: 'heatmap',
+            colorRange,
+            coverage,
+            theData,
+            elevationRange: [0, 3000],
+            elevationScale: theData  && theData.length ? 50 : 0,
+            extruded: true,
+            //getPosition: d => d,
+            //onHover: this.props.onHover,
+            //pickable: Boolean(this.props.onHover),
+            radius,
+            upperPercentile,
+            material,
+    
+            transitions: {
+              elevationScale: 3000
+            }
+          })
         ];
         */
-       
-        const mdata = [{
-            name: "random-name",
-            color: [101, 147, 245],
-            path:[[-74.00578, 40.713067],
-                  [-74.004577, 40.712425],
-                  [-74.003626, 40.713650],
-                  [-74.002666, 40.714243],
-                  [-74.002136, 40.715177],
-                  [-73.998493, 40.713452],
-                  [-73.997981, 40.713673],
-                  [-73.997586, 40.713448],
-                  [-73.99256, 40.713863]]}
-           ]
 
-           /*
-           const mdata = [{
-            name: "random-name",
-            color: [101, 147, 245],
-            path:[[40.713067, -74.00578],
-                  [40.712425, -74.004577],
-                  [40.713650, -74.003626],
-                  [40.714243, -74.002666],
-                  [40.715177, -74.002136],
-                  [40.713452, -73.998493],
-                  [40.713673, -73.997981],
-                  [40.713448, -73.997586],
-                  [40.713863, -73.99256]]}
-           ]
-            */
-           
-        const pathLayer = [
-            new PathLayer({
-             id: "path-layer",
-             mdata,
-             getWidth: data => 7,
-             getColor: data => data.color,
-             widthMinPixels: 7
-           })
-          ]
-        
-          const layers = [
-            pathLayer
-          ]
+      }
 
+      
+    render() {
+      console.log("RENDER")
         return (
         
         <DeckGL
+            ref={this.map} 
             initialViewState={this.state.initialViewState}
             controller={true}
-            layers={layers}
+            layers={this.state.layers}
             width={"100%"}
-            height={750}
+            height={"100%"}
             style={{position:"relative"}}
-            
+            effects={[lightingEffect]}
         >
             <StaticMap 
                 mapboxApiAccessToken={this.state.token} 

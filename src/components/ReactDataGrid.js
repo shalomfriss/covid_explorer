@@ -101,10 +101,13 @@ class ReactDataGrid extends Component {
               title={this.state.title}
               columns={this.state.columns}
               data={this.state.rows}
+              
               options={{
                 headerStyle: {
-                  backgroundColor: '#0c0f0a',
-                  color: '#FFF',
+                  backgroundColor: '#fbff12',
+                  color: '#0c0f0a',
+                  //fontWeight: "bold",
+                  fontSize: "18px"
                 },
                 rowStyle: {
                   backgroundColor: '#eeeeee',

@@ -5,6 +5,11 @@ import DeckGLMap from "./components/DeckGLMap";
 import KeplerGLMap from "./components/KeplerGLMap";
 import ReactDataGrid from "./components/ReactDataGrid";
 import logo from './logo.svg';
+import Split from 'react-split'
+import { readString, readRemoteFile } from 'react-papaparse'
+import  countryText  from './data/countries';
+ 
+
 
 class App extends Component {
 
@@ -27,20 +32,26 @@ class App extends Component {
             {
               data: [1, 2, 1, 4, 3, 6]
             }
-          ]
+          ] 
         };
+      
+      this.countryMap = []
+      countryText.map(item => {
+        this.countryMap[item.country] = {latitude: item.latitude, longitude: item.longitude}
+      })
+      this.state.result = {}
+
   }
 
   componentDidMount() {
-    
+    this.loadData()
+  }
+
+  loadData() {
     fetch("https://api.covid19api.com/summary")
       .then(res => res.json())
       .then(
             (result) => {
-              console.log(result.Global)
-              console.log(result.Countries)
-              console.log(this.grid)
-              
 
               const defaultColumnProperties = {
                 sortable: true,
@@ -48,41 +59,70 @@ class App extends Component {
               };
               
               const theColumns = [
-                {field: "Country", title: "Country"}, 
+                {field: "Country", title: "Country", defaultSort: "desc"}, 
+                {field: "TotalConfirmed", title: "Total Confirmed", defaultSort: "desc"}, 
+                {field: "TotalDeaths", title: "Total Deaths", defaultSort: "desc"}, 
+                {field: "TotalRecovered", title: "Total Recovered", defaultSort: "desc"},
+                {field: "NewConfirmed", title: "New Confirmed", defaultSort: "desc"}, 
+                {field: "NewDeaths", title: "New Deaths", defaultSort: "desc"}, 
+                {field: "NewRecovered", title: "New Recovered", defaultSort: "desc"}
                 //{key: "Date", name: "Date"}, 
-                {field: "TotalConfirmed", title: "Total Confirmed"}, 
-                {field: "TotalDeaths", title: "Total Deaths"}, 
-                {field: "TotalRecovered", title: "Total Recovered"},
-                
-                {field: "NewConfirmed", title: "New Confirmed"}, 
-                {field: "NewDeaths", title: "New Deaths"}, 
-                {field: "NewRecovered", title: "New Recovered"}
                 //{key: "Slug", name: "Slug"}, 
                 ]
-                
+
+                //Add lat long
+                result.Countries.map(item => {
+                  if(this.countryMap[item.CountryCode]){
+                    item.latitude = this.countryMap[item.CountryCode].latitude
+                    item.longitude = this.countryMap[item.CountryCode].longitude
+                  }
+                })
               
-              this.grid.current.setData(result.Countries, theColumns, result.Global)
+                /*
+              this.setState({
+                columns: theColumns,
+                result: result
+              })
+              */
+              this.state.columns = theColumns
+              this.state.result = result
+              this.grid.current.setData(this.state.result.Countries, this.state.columns, this.state.result.Global)
+              this.map.current.setData(this.state.result)
+              
             },
             (error) => {
               console.log(error)
             }
         )
   }
-
-    render() {
-      return(
-        <div className="App">
-          <div>
-          <DeckGLMap ref={this.map} />
-          </div>
-          <div>
+    
+  render() {
+    return(
+      <div className="App">
+        <div style={{height: 800}}>
+          <DeckGLMap ref={this.map} data={this.state.result.Countries} />
+        </div>
+        <div>
           <ReactDataGrid ref={this.grid} />
-          </div>
-          
-        </div>)
-    }
+        </div>
+      </div>)
+  }
 }
 
 //          <LineChart ref={this.lineChart} />
+//Confirmed cases
+//Active cases
+//incidence rate
+//Case-fatality ratio
+//Testing rate
+//Hospitalization rate
+
+//Total cases by country
+//Confirmed Cases by Province/State/Dependency
+//Confirmed Cases by US County
+
+//Confirmed chart 
+//Confirmed logarithmic chart
+//Daily cases chart
 
 export default App;
