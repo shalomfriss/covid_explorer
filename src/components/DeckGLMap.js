@@ -104,44 +104,51 @@ class DeckGLMap extends Component {
             getPosition: d => [d.longitude, d.latitude, 0],
             getRadius: d => d.TotalConfirmed / 10,
             radiusScale: 10,
-            radiusMinPixels: 2,
+            radiusMinPixels: 3,
             radiusMaxPixels: 30,
             getColor: [255, 20, 100]
           }),
           new TextLayer({
             data: theData,
             getPosition: d => [d.longitude, d.latitude, 0],
-            getText: d => d.text
+            getText: d => d.text,
+            getSize: d => d.TotalConfirmed / 50000,
+            minTextSize: 12,
+            getColor: [247,248,243],
+            getTextAnchor: 'middle',
+            getAlignmentBaseline: 'center',
+            parameters: {
+              depthTest: false
+            }
           })
         ];
-        
-        return layers
 
-        //console.log(geojsonLayer)
-        //return [geojsonLayer]
         /*
-        return [
+        ,
           new HexagonLayer({
             id: 'heatmap',
-            colorRange,
-            coverage,
-            theData,
+            //colorRange,
+            //coverage,
+            data: theData,
+            getPosition: d => [d.longitude, d.latitude, 0],
             elevationRange: [0, 3000],
             elevationScale: theData  && theData.length ? 50 : 0,
             extruded: true,
             //getPosition: d => d,
             //onHover: this.props.onHover,
             //pickable: Boolean(this.props.onHover),
-            radius,
-            upperPercentile,
-            material,
+            //radius,
+            //upperPercentile,
+            //material,
     
             transitions: {
               elevationScale: 3000
             }
           })
-        ];
-        */
+          */
+
+        return layers
+
 
       }
 
@@ -158,7 +165,7 @@ class DeckGLMap extends Component {
             width={"100%"}
             height={"100%"}
             style={{position:"relative"}}
-            effects={[lightingEffect]}
+            //effects={[lightingEffect]}
         >
             <StaticMap 
                 mapboxApiAccessToken={this.state.token} 
