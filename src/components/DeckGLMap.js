@@ -7,6 +7,8 @@ import {HexagonLayer} from '@deck.gl/aggregation-layers';
 import {StaticMap} from 'react-map-gl';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
+import {MapboxLayer} from '@deck.gl/mapbox';
+import MapGL, {GeolocateControl } from 'react-map-gl'
 
 
 const ambientLight = new AmbientLight({
@@ -72,29 +74,37 @@ class DeckGLMap extends Component {
         console.log("DATA", this.state.data)
         this.state.token = "pk.eyJ1Ijoic2hhbG9tZnJpc3MiLCJhIjoiY2l2Mm9sanZlMDBjbjJ0bW0yZW4yY3RzdCJ9.zUxsw0zwKk1O38YSRpm9OA"
         this.state.layers = []
+
         this.map = React.createRef()
+        this.mapbox = React.createRef()
     }
 
     componentDidMount() {
-
+      console.log("MOUNT")
+      
+    }
+    
+    formatNumber (value) {
+      return new Intl.NumberFormat().format(value);
     }
 
     setData(data) {
-      data.Countries.map(item => {
-        item.text = item.TotalConfirmed + ""
-      })
-      console.log(data.Countries)
-      this.state.layers = this._renderLayers(data.Countries)  
+      
+      this.state.layers = this._renderLayers(data.Countries, "NewConfirmed")  
       this.setState({data: data})
     }
     
 
     
-    _renderLayers(theData) {
+    _renderLayers(theData, field = "TotalConfirmed") {
         
         const radius = 1000
         const upperPercentile = 100
         const coverage = 1
+
+        theData.map(item => {
+          item.text = this.formatNumber(item[field]) + ""
+        })
         
         console.log(theData)
         const layers = [
@@ -102,18 +112,18 @@ class DeckGLMap extends Component {
             id: 'my-scatterplot',
             data: theData,
             getPosition: d => [d.longitude, d.latitude, 0],
-            getRadius: d => d.TotalConfirmed / 10,
+            getRadius: d => d[field] / 10,
             radiusScale: 10,
-            radiusMinPixels: 3,
+            radiusMinPixels: 5,
             radiusMaxPixels: 30,
+            opacity: 0.3,
             getColor: [255, 20, 100]
           }),
           new TextLayer({
             data: theData,
             getPosition: d => [d.longitude, d.latitude, 0],
             getText: d => d.text,
-            getSize: d => d.TotalConfirmed / 50000,
-            minTextSize: 12,
+            getSize: d => Math.max(d[field] / 50000, 22),
             getColor: [247,248,243],
             getTextAnchor: 'middle',
             getAlignmentBaseline: 'center',
@@ -123,41 +133,23 @@ class DeckGLMap extends Component {
           })
         ];
 
-        /*
-        ,
-          new HexagonLayer({
-            id: 'heatmap',
-            //colorRange,
-            //coverage,
-            data: theData,
-            getPosition: d => [d.longitude, d.latitude, 0],
-            elevationRange: [0, 3000],
-            elevationScale: theData  && theData.length ? 50 : 0,
-            extruded: true,
-            //getPosition: d => d,
-            //onHover: this.props.onHover,
-            //pickable: Boolean(this.props.onHover),
-            //radius,
-            //upperPercentile,
-            //material,
-    
-            transitions: {
-              elevationScale: 3000
-            }
-          })
-          */
-
         return layers
 
 
       }
 
-      
+    mapLoaded() {
+      console.log("LOADED")
+
+    }
     render() {
+      
       console.log("RENDER")
+
+          
+
         return (
-        
-        <DeckGL
+          <DeckGL
             ref={this.map} 
             initialViewState={this.state.initialViewState}
             controller={true}
@@ -165,14 +157,19 @@ class DeckGLMap extends Component {
             width={"100%"}
             height={"100%"}
             style={{position:"relative"}}
-            //effects={[lightingEffect]}
+            effects={[lightingEffect]}
         >
-            <StaticMap 
-                mapboxApiAccessToken={this.state.token} 
-                mapStyle='mapbox://styles/mapbox/dark-v9'
-                //mapStyle='mapbox://styles/mapbox/streets-v11'
-            />
+          <MapGL
+            id="mapbox"
+            mapboxApiAccessToken={this.state.token} 
+            mapStyle='mapbox://styles/mapbox/dark-v9'
+            ref={this.mapbox}
+            onLoad={this.mapLoaded}
+          />
+        
         </DeckGL>
+
+        
           
         );
     }

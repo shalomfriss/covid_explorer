@@ -47,6 +47,8 @@ class App extends Component {
     this.loadData()
   }
 
+  
+
   loadData() {
     fetch("https://api.covid19api.com/summary")
       .then(res => res.json())
@@ -77,6 +79,7 @@ class App extends Component {
                     item.longitude = this.countryMap[item.CountryCode].longitude
                   }
                 })
+                
               
                 /*
               this.setState({
@@ -108,21 +111,5 @@ class App extends Component {
       </div>)
   }
 }
-
-//          <LineChart ref={this.lineChart} />
-//Confirmed cases
-//Active cases
-//incidence rate
-//Case-fatality ratio
-//Testing rate
-//Hospitalization rate
-
-//Total cases by country
-//Confirmed Cases by Province/State/Dependency
-//Confirmed Cases by US County
-
-//Confirmed chart 
-//Confirmed logarithmic chart
-//Daily cases chart
 
 export default App;
