@@ -8,7 +8,13 @@ import logo from './logo.svg';
 import Split from 'react-split'
 import { readString, readRemoteFile } from 'react-papaparse'
 import  countryText  from './data/countries';
- 
+import Button from 'react-bootstrap/Button';
+import {
+  AwesomeButton,
+  AwesomeButtonProgress,
+  AwesomeButtonSocial,
+} from 'react-awesome-button';
+import './css/theme-black.css';
 
 
 class App extends Component {
@@ -65,6 +71,7 @@ class App extends Component {
                 {field: "TotalConfirmed", title: "Total Confirmed", defaultSort: "desc"}, 
                 {field: "TotalDeaths", title: "Total Deaths", defaultSort: "desc"}, 
                 {field: "TotalRecovered", title: "Total Recovered", defaultSort: "desc"},
+                {field: "ActiveCases", title: "Active Cases", defaultSort: "desc"},
                 {field: "NewConfirmed", title: "New Confirmed", defaultSort: "desc"}, 
                 {field: "NewDeaths", title: "New Deaths", defaultSort: "desc"}, 
                 {field: "NewRecovered", title: "New Recovered", defaultSort: "desc"}
@@ -78,8 +85,11 @@ class App extends Component {
                     item.latitude = this.countryMap[item.CountryCode].latitude
                     item.longitude = this.countryMap[item.CountryCode].longitude
                   }
+
+                  item.ActiveCases = item.TotalConfirmed - item.TotalRecovered - item.TotalDeaths
                 })
-                
+
+                //active cases = total cases - total recovered - total deaths
               
                 /*
               this.setState({
@@ -99,11 +109,26 @@ class App extends Component {
         )
   }
     
+  buttonClick(e) {
+    console.log("click", e, e.data)
+
+  }
   render() {
     return(
       <div className="App">
+        
+        
         <div style={{height: 800}}>
           <DeckGLMap ref={this.map} data={this.state.result.Countries} />
+        </div>
+        <div style={{width: "100%", height: "40px", paddingTop: "10px"}}>
+          <AwesomeButton type="primary" className="mapButton" data="test123" onClick={buttonClick}>Total Confirmed</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">Total Deaths</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">Total Recovered</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">Active Cases</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">New Confirmed</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">New Deaths</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton">New Recovered</AwesomeButton>
         </div>
         <div>
           <ReactDataGrid ref={this.grid} />

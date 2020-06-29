@@ -101,7 +101,15 @@ class ReactDataGrid extends Component {
               title={this.state.title}
               columns={this.state.columns}
               data={this.state.rows}
-              
+              actions={[
+                {
+                  icon: 'save',
+                  tooltip: 'Save User',
+                  onClick: (event, rowData) => {
+                    console.log(rowData)
+                  }
+                }
+              ]}
               options={{
                 headerStyle: {
                   backgroundColor: '#fbff12',

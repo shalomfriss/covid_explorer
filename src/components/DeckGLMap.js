@@ -90,7 +90,7 @@ class DeckGLMap extends Component {
 
     setData(data) {
       
-      this.state.layers = this._renderLayers(data.Countries, "NewConfirmed")  
+      this.state.layers = this._renderLayers(data.Countries, "TotalConfirmed")  
       this.setState({data: data})
     }
     
