@@ -60,7 +60,7 @@ class App extends Component {
       .then(res => res.json())
       .then(
             (result) => {
-
+              
               const defaultColumnProperties = {
                 sortable: true,
                 //width: 200
@@ -108,31 +108,43 @@ class App extends Component {
             }
         )
   }
-    
-  buttonClick(e) {
-    console.log("click", e, e.data)
 
-  }
   render() {
     return(
       <div className="App">
-        
-        
+
         <div style={{height: 800}}>
           <DeckGLMap ref={this.map} data={this.state.result.Countries} />
         </div>
-        <div style={{width: "100%", height: "40px", paddingTop: "10px"}}>
-          <AwesomeButton type="primary" className="mapButton" data="test123" onClick={buttonClick}>Total Confirmed</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">Total Deaths</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">Total Recovered</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">Active Cases</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">New Confirmed</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">New Deaths</AwesomeButton>
-          <AwesomeButton type="primary" className="mapButton">New Recovered</AwesomeButton>
+        
+        <div style={{width: "100%", height: "40px", paddingTop: "10px", backgroundColor: "rgba(0,0,0,.2)"}}>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("TotalConfirmed")
+          }}>Total Confirmed</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("TotalDeaths")
+          }}>Total Deaths</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("TotalRecovered")
+          }}>Total Recovered</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("ActiveCases")
+          }}>Active Cases</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("NewConfirmed")
+          }}>New Confirmed</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("NewDeaths")
+          }}>New Deaths</AwesomeButton>
+          <AwesomeButton type="primary" className="mapButton" onPress={() => {
+            this.map.current.renderField("NewRecovered")
+          }}>New Recovered</AwesomeButton>
         </div>
-        <div>
+        
+        <div style={{margin: "10px"}}>
           <ReactDataGrid ref={this.grid} />
         </div>
+
       </div>)
   }
 }

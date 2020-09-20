@@ -26,7 +26,7 @@ class ReactDataGrid extends Component {
     setData(theRows, theColumns, globalData) {
         this.setState({rows: theRows, columns: theColumns, globalData: globalData})
     }
-
+    
     componentDidMount() {
       
     }
@@ -80,7 +80,7 @@ class ReactDataGrid extends Component {
                     <NumberFormat value={this.state.globalData.NewConfirmed} displayType={'text'} thousandSeparator={true} />
                   </div>
                 </div> 
-
+                
                 <div className='globalEntry'>
                   <div className='globalEntryTitle'>New Deaths:</div>      
                   <div className='globalEntryValue'>
@@ -104,7 +104,7 @@ class ReactDataGrid extends Component {
               actions={[
                 {
                   icon: 'save',
-                  tooltip: 'Save User',
+                  tooltip: 'Load data',
                   onClick: (event, rowData) => {
                     console.log(rowData)
                   }
